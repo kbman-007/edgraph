@@ -1,0 +1,1739 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EduGraph AI 中小学教育系统平台</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' fill='%2307111b'/%3E%3Cpath fill='%2317cfc3' d='M20 3 34.7 11.5v17L20 37 5.3 28.5v-17L20 3Zm0 5.4-10 5.8v11.6l10 5.8 10-5.8V14.2l-10-5.8Zm0 5.7 5.1 3v5.8L20 25.9l-5.1-3v-5.8l5.1-3Z'/%3E%3C/svg%3E">
+    <meta
+      name="description"
+      content="EduGraph AI 从中小学考试备考切入，把每一次作答转化为学习证据，并连接诊断、训练、Mock Test、批改反馈和多角色报告。"
+    >
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #07111b;
+        --ink-2: #0d1f30;
+        --text: #172231;
+        --muted: #667386;
+        --soft: #f3f7fa;
+        --paper: #ffffff;
+        --line: #dbe4ec;
+        --teal: #17cfc3;
+        --teal-dark: #087c82;
+        --red: #da3030;
+        --amber: #e6a229;
+        --blue: #2f68d8;
+        --green: #1c996e;
+        --shadow: 0 22px 60px rgba(7, 17, 27, 0.13);
+        --soft-shadow: 0 16px 36px rgba(7, 17, 27, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        color: var(--text);
+        background: var(--paper);
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+          "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+        line-height: 1.58;
+        letter-spacing: 0;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      img {
+        display: block;
+        max-width: 100%;
+      }
+
+      .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(7, 17, 27, 0.86);
+        color: #fff;
+        backdrop-filter: blur(18px);
+      }
+
+      .nav {
+        width: min(1200px, calc(100% - 40px));
+        min-height: 72px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 28px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+      }
+
+      .brand-mark {
+        width: 34px;
+        height: 34px;
+        color: var(--teal);
+        flex: 0 0 auto;
+      }
+
+      .brand-name {
+        display: grid;
+        gap: 0;
+        line-height: 1.18;
+      }
+
+      .brand-name strong {
+        color: #fff;
+        font-size: 18px;
+        font-weight: 800;
+      }
+
+      .brand-name span {
+        color: rgba(255, 255, 255, 0.62);
+        font-size: 12px;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        color: rgba(255, 255, 255, 0.76);
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .nav-links a {
+        transition: color 180ms ease;
+      }
+
+      .nav-links a:hover {
+        color: #fff;
+      }
+
+      .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        padding: 0 18px;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 800;
+        cursor: pointer;
+        transition:
+          transform 180ms ease,
+          box-shadow 180ms ease,
+          background-color 180ms ease,
+          border-color 180ms ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-1px);
+      }
+
+      .btn-primary {
+        background: var(--teal);
+        color: #031014;
+        box-shadow: 0 10px 26px rgba(23, 207, 195, 0.28);
+      }
+
+      .btn-ghost {
+        border-color: rgba(255, 255, 255, 0.24);
+        color: #fff;
+      }
+
+      .hero {
+        position: relative;
+        min-height: 760px;
+        overflow: hidden;
+        color: #fff;
+        background:
+          linear-gradient(90deg, rgba(7, 17, 27, 0.99), rgba(7, 17, 27, 0.92) 42%, rgba(7, 17, 27, 0.86)),
+          radial-gradient(circle at 78% 18%, rgba(23, 207, 195, 0.2), transparent 32%),
+          #07111b;
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+        background-size: 52px 52px;
+        mask-image: linear-gradient(90deg, transparent 0, #000 20%, #000 78%, transparent 100%);
+        opacity: 0.38;
+      }
+
+      .hero-inner {
+        position: relative;
+        width: min(1200px, calc(100% - 40px));
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 0.9fr 1.1fr;
+        gap: 48px;
+        align-items: center;
+        min-height: calc(760px - 72px);
+        padding: 58px 0 64px;
+      }
+
+      .hero h1 {
+        margin: 0;
+        max-width: 620px;
+        font-size: 76px;
+        line-height: 1.04;
+        letter-spacing: 0;
+      }
+
+      .hero h1 span {
+        color: var(--teal);
+      }
+
+      .hero-lead {
+        margin: 24px 0 0;
+        max-width: 560px;
+        color: rgba(255, 255, 255, 0.78);
+        font-size: 20px;
+        line-height: 1.72;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 34px;
+      }
+
+      .proof-row {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 42px;
+        max-width: 640px;
+      }
+
+      .proof-item {
+        border-top: 1px solid rgba(255, 255, 255, 0.22);
+        padding-top: 15px;
+      }
+
+      .proof-item strong {
+        display: block;
+        color: #fff;
+        font-size: 17px;
+        line-height: 1.3;
+      }
+
+      .proof-item span {
+        display: block;
+        margin-top: 6px;
+        color: rgba(255, 255, 255, 0.58);
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .system-map {
+        position: relative;
+        min-height: 550px;
+        padding: 22px;
+      }
+
+      .map-stage {
+        position: absolute;
+        inset: 18px 22px;
+        z-index: 0;
+        border: 1px solid rgba(23, 207, 195, 0.22);
+        background:
+          linear-gradient(135deg, rgba(23, 207, 195, 0.08), rgba(47, 104, 216, 0.04)),
+          rgba(8, 24, 38, 0.62);
+        box-shadow: var(--shadow);
+        transform: perspective(1000px) rotateY(-7deg) rotateX(2deg);
+      }
+
+      .map-core {
+        position: absolute;
+        z-index: 2;
+        left: 50%;
+        top: 42%;
+        width: 290px;
+        min-height: 138px;
+        transform: translate(-50%, -50%);
+        border: 1px solid rgba(23, 207, 195, 0.54);
+        background:
+          linear-gradient(180deg, rgba(23, 207, 195, 0.35), rgba(8, 124, 130, 0.24)),
+          rgba(4, 24, 32, 0.9);
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+          0 22px 80px rgba(23, 207, 195, 0.2);
+        display: grid;
+        place-items: center;
+        text-align: center;
+        padding: 26px;
+      }
+
+      .map-core strong {
+        display: block;
+        font-size: 24px;
+        line-height: 1.25;
+      }
+
+      .map-core span {
+        display: block;
+        margin-top: 7px;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 12px;
+        text-transform: uppercase;
+      }
+
+      .map-engine {
+        position: absolute;
+        z-index: 2;
+        left: 50%;
+        top: 62%;
+        width: 360px;
+        min-height: 74px;
+        transform: translateX(-50%);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(16, 35, 58, 0.88);
+        display: grid;
+        place-items: center;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.84);
+        font-weight: 800;
+      }
+
+      .map-node {
+        position: absolute;
+        z-index: 2;
+        width: 118px;
+        min-height: 92px;
+        display: grid;
+        justify-items: center;
+        align-content: center;
+        gap: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        background: rgba(6, 18, 31, 0.86);
+        color: rgba(255, 255, 255, 0.8);
+        text-align: center;
+        box-shadow: 0 14px 34px rgba(0, 0, 0, 0.24);
+      }
+
+      .map-node svg {
+        width: 26px;
+        height: 26px;
+        color: var(--teal);
+      }
+
+      .map-node span {
+        font-size: 12px;
+        line-height: 1.25;
+        font-weight: 800;
+      }
+
+      .node-answer {
+        left: 4%;
+        top: 27%;
+      }
+
+      .node-practice {
+        right: 5%;
+        top: 28%;
+      }
+
+      .node-mock {
+        left: 10%;
+        bottom: 16%;
+      }
+
+      .node-report {
+        right: 11%;
+        bottom: 15%;
+      }
+
+      .node-growth {
+        left: 44%;
+        bottom: 4%;
+      }
+
+      .connector {
+        position: absolute;
+        z-index: 1;
+        border-color: rgba(23, 207, 195, 0.48);
+        border-style: dashed;
+        pointer-events: none;
+      }
+
+      .connector-a {
+        left: 22%;
+        top: 38%;
+        width: 170px;
+        border-top-width: 1px;
+      }
+
+      .connector-b {
+        right: 22%;
+        top: 39%;
+        width: 166px;
+        border-top-width: 1px;
+      }
+
+      .connector-c {
+        left: 25%;
+        bottom: 29%;
+        width: 190px;
+        border-top-width: 1px;
+        transform: rotate(-16deg);
+      }
+
+      .connector-d {
+        right: 26%;
+        bottom: 29%;
+        width: 178px;
+        border-top-width: 1px;
+        transform: rotate(16deg);
+      }
+
+      .section {
+        padding: 96px 0;
+      }
+
+      .section.tight {
+        padding: 76px 0;
+      }
+
+      .section-dark {
+        color: #fff;
+        background: var(--ink);
+      }
+
+      .section-soft {
+        background: var(--soft);
+      }
+
+      .inner {
+        width: min(1200px, calc(100% - 40px));
+        margin: 0 auto;
+      }
+
+      .section-head {
+        display: grid;
+        grid-template-columns: 0.8fr 1.2fr;
+        gap: 42px;
+        align-items: end;
+        margin-bottom: 36px;
+      }
+
+      .section-label {
+        margin: 0 0 12px;
+        color: var(--teal-dark);
+        font-size: 13px;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .section-dark .section-label {
+        color: var(--teal);
+      }
+
+      h2 {
+        margin: 0;
+        color: inherit;
+        font-size: 44px;
+        line-height: 1.14;
+        letter-spacing: 0;
+      }
+
+      .section-head p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 18px;
+      }
+
+      .section-dark .section-head p {
+        color: rgba(255, 255, 255, 0.68);
+      }
+
+      .pain-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .pain-card {
+        min-height: 260px;
+        padding: 24px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+        box-shadow: var(--soft-shadow);
+      }
+
+      .pain-card .icon {
+        width: 42px;
+        height: 42px;
+        margin-bottom: 24px;
+        color: var(--teal-dark);
+      }
+
+      .pain-card:nth-child(2) .icon {
+        color: var(--amber);
+      }
+
+      .pain-card:nth-child(3) .icon {
+        color: var(--red);
+      }
+
+      .pain-card:nth-child(4) .icon {
+        color: var(--blue);
+      }
+
+      .pain-card h3 {
+        margin: 0 0 14px;
+        font-size: 22px;
+        line-height: 1.25;
+      }
+
+      .pain-card p {
+        margin: 0;
+        color: #4e5b6c;
+        font-size: 15px;
+      }
+
+      .sharp-line {
+        margin-top: 28px;
+        border-left: 6px solid var(--red);
+        background: #fff;
+        box-shadow: var(--soft-shadow);
+        padding: 22px 28px;
+        color: #1d2838;
+        font-size: 23px;
+        font-weight: 900;
+        line-height: 1.45;
+      }
+
+      .sharp-line span {
+        color: var(--red);
+      }
+
+      .thesis {
+        display: grid;
+        grid-template-columns: 0.92fr 1.08fr;
+        gap: 44px;
+        align-items: stretch;
+      }
+
+      .thesis-copy {
+        padding: 34px 0;
+      }
+
+      .thesis-copy h2 {
+        font-size: 52px;
+      }
+
+      .thesis-copy p {
+        margin: 22px 0 0;
+        color: rgba(255, 255, 255, 0.72);
+        font-size: 19px;
+      }
+
+      .thesis-copy strong {
+        color: var(--teal);
+      }
+
+      .contrast-list {
+        display: grid;
+        gap: 12px;
+        align-content: center;
+      }
+
+      .contrast-row {
+        display: grid;
+        grid-template-columns: 0.7fr 1.3fr;
+        gap: 18px;
+        align-items: center;
+        padding: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.13);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      .contrast-row b {
+        color: #fff;
+        font-size: 16px;
+      }
+
+      .contrast-row span {
+        color: rgba(255, 255, 255, 0.68);
+        font-size: 15px;
+      }
+
+      .loop {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        align-items: start;
+        gap: 12px;
+      }
+
+      .loop-step {
+        position: relative;
+        min-height: 210px;
+        padding: 22px 18px 20px;
+        border-top: 5px solid var(--teal-dark);
+        background: #fff;
+        box-shadow: var(--soft-shadow);
+      }
+
+      .loop-step:nth-child(2) {
+        border-color: var(--green);
+      }
+
+      .loop-step:nth-child(3) {
+        border-color: var(--amber);
+      }
+
+      .loop-step:nth-child(4) {
+        border-color: var(--red);
+      }
+
+      .loop-step:nth-child(5) {
+        border-color: var(--blue);
+      }
+
+      .loop-step:nth-child(6) {
+        border-color: #24436a;
+      }
+
+      .loop-step .num {
+        display: block;
+        color: #8090a4;
+        font-size: 13px;
+        font-weight: 900;
+      }
+
+      .loop-step h3 {
+        margin: 12px 0 9px;
+        color: #111c2b;
+        font-size: 21px;
+        line-height: 1.18;
+      }
+
+      .loop-step p {
+        margin: 0;
+        color: #536174;
+        font-size: 14px;
+      }
+
+      .loop-note {
+        margin-top: 26px;
+        padding: 20px 24px;
+        background: #07111b;
+        color: #fff;
+        font-size: 20px;
+        font-weight: 900;
+      }
+
+      .loop-note span {
+        color: var(--teal);
+      }
+
+      .product-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .product-panel {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+        box-shadow: var(--soft-shadow);
+      }
+
+      .product-panel.large {
+        grid-column: span 2;
+      }
+
+      .product-media {
+        aspect-ratio: 1.65;
+        background: #edf3f8;
+        overflow: hidden;
+      }
+
+      .product-media img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: top center;
+      }
+
+      .product-body {
+        padding: 19px;
+      }
+
+      .product-body h3 {
+        margin: 0 0 8px;
+        font-size: 20px;
+      }
+
+      .product-body p {
+        margin: 0;
+        color: #5b6879;
+        font-size: 14px;
+      }
+
+      .state-panel {
+        min-height: 100%;
+        padding: 22px;
+        background:
+          linear-gradient(180deg, rgba(23, 207, 195, 0.1), transparent 36%),
+          #fff;
+      }
+
+      .score-ring {
+        width: 126px;
+        height: 126px;
+        margin: 12px auto 18px;
+        border-radius: 50%;
+        background:
+          conic-gradient(var(--teal) 0 78%, #e5edf3 78% 100%);
+        display: grid;
+        place-items: center;
+      }
+
+      .score-ring span {
+        width: 92px;
+        height: 92px;
+        border-radius: 50%;
+        background: #fff;
+        display: grid;
+        place-items: center;
+        color: #102033;
+        font-size: 34px;
+        font-weight: 900;
+      }
+
+      .bars {
+        display: grid;
+        gap: 12px;
+      }
+
+      .bar {
+        display: grid;
+        grid-template-columns: 86px 1fr 38px;
+        gap: 10px;
+        align-items: center;
+        color: #536174;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .bar-line {
+        height: 8px;
+        background: #e8eef4;
+        overflow: hidden;
+      }
+
+      .bar-line i {
+        display: block;
+        height: 100%;
+        background: var(--teal-dark);
+      }
+
+      .wedge {
+        color: #fff;
+        background:
+          linear-gradient(180deg, #07111b 0, #092033 100%);
+      }
+
+      .wedge-track {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+        align-items: stretch;
+        margin-top: 34px;
+      }
+
+      .wedge-item {
+        position: relative;
+        min-height: 240px;
+        padding: 26px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .wedge-item::after {
+        content: "";
+        position: absolute;
+        top: 46px;
+        right: -20px;
+        width: 22px;
+        border-top: 2px solid var(--teal);
+      }
+
+      .wedge-item:last-child::after {
+        display: none;
+      }
+
+      .wedge-item .stage {
+        color: var(--teal);
+        font-size: 13px;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+      }
+
+      .wedge-item h3 {
+        margin: 16px 0 12px;
+        color: #fff;
+        font-size: 24px;
+        line-height: 1.2;
+      }
+
+      .wedge-item p {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.68);
+      }
+
+      .exam-strip {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 22px;
+      }
+
+      .exam-strip span {
+        border: 1px solid rgba(23, 207, 195, 0.28);
+        border-radius: 8px;
+        padding: 8px 11px;
+        color: rgba(255, 255, 255, 0.78);
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .value-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .value-item {
+        min-height: 226px;
+        padding: 26px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+      }
+
+      .value-item h3 {
+        margin: 0 0 10px;
+        font-size: 24px;
+      }
+
+      .value-item p {
+        margin: 0;
+        color: #586677;
+      }
+
+      .value-item b {
+        display: block;
+        margin-top: 18px;
+        color: var(--teal-dark);
+        font-size: 14px;
+      }
+
+      .flywheel-wrap {
+        display: grid;
+        grid-template-columns: 0.95fr 1.05fr;
+        gap: 54px;
+        align-items: center;
+      }
+
+      .wheel {
+        position: relative;
+        aspect-ratio: 1;
+        max-width: 470px;
+        margin: 0 auto;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background:
+          linear-gradient(180deg, rgba(23, 207, 195, 0.08), rgba(255, 255, 255, 0.02)),
+          rgba(255, 255, 255, 0.04);
+        display: grid;
+        place-items: center;
+      }
+
+      .wheel-core {
+        width: 190px;
+        height: 190px;
+        border: 1px solid rgba(23, 207, 195, 0.54);
+        background: rgba(23, 207, 195, 0.12);
+        display: grid;
+        place-items: center;
+        text-align: center;
+        color: #fff;
+        font-size: 22px;
+        font-weight: 900;
+        line-height: 1.3;
+      }
+
+      .wheel-node {
+        position: absolute;
+        width: 132px;
+        min-height: 78px;
+        display: grid;
+        place-items: center;
+        padding: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        background: rgba(7, 17, 27, 0.9);
+        color: rgba(255, 255, 255, 0.78);
+        text-align: center;
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .wheel-node:nth-child(2) {
+        top: 28px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .wheel-node:nth-child(3) {
+        top: 46%;
+        right: 22px;
+      }
+
+      .wheel-node:nth-child(4) {
+        bottom: 28px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .wheel-node:nth-child(5) {
+        top: 46%;
+        left: 22px;
+      }
+
+      .wheel-arrow {
+        position: absolute;
+        inset: 72px;
+        border: 2px dashed rgba(23, 207, 195, 0.45);
+        transform: rotate(12deg);
+      }
+
+      .flywheel-copy h2 {
+        color: #fff;
+        font-size: 50px;
+      }
+
+      .flywheel-copy p {
+        margin: 22px 0 0;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 19px;
+      }
+
+      .metric-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 34px;
+      }
+
+      .metric {
+        border: 1px solid rgba(23, 207, 195, 0.28);
+        padding: 18px;
+      }
+
+      .metric strong {
+        display: block;
+        color: var(--teal);
+        font-size: 28px;
+        line-height: 1;
+      }
+
+      .metric span {
+        display: block;
+        margin-top: 8px;
+        color: rgba(255, 255, 255, 0.62);
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .final {
+        padding: 92px 0 108px;
+        color: #fff;
+        background:
+          linear-gradient(135deg, rgba(218, 48, 48, 0.16), transparent 38%),
+          #07111b;
+      }
+
+      .final-grid {
+        display: grid;
+        grid-template-columns: 1fr 0.72fr;
+        gap: 56px;
+        align-items: center;
+      }
+
+      .final h2 {
+        font-size: 56px;
+      }
+
+      .final h2 span {
+        color: var(--teal);
+      }
+
+      .final p {
+        margin: 24px 0 0;
+        color: rgba(255, 255, 255, 0.68);
+        font-size: 20px;
+      }
+
+      .pitch-box {
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 8px;
+        padding: 28px;
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .pitch-box strong {
+        display: block;
+        color: var(--teal);
+        font-size: 14px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .pitch-box p {
+        margin: 16px 0 0;
+        color: rgba(255, 255, 255, 0.78);
+        font-size: 17px;
+      }
+
+      @media (max-width: 1080px) {
+        .nav-links {
+          display: none;
+        }
+
+        .hero-inner,
+        .section-head,
+        .thesis,
+        .flywheel-wrap,
+        .final-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .hero {
+          min-height: auto;
+        }
+
+        .hero-inner {
+          min-height: 0;
+        }
+
+        .hero h1 {
+          font-size: 58px;
+        }
+
+        .system-map {
+          min-height: 510px;
+        }
+
+        .pain-grid,
+        .wedge-track,
+        .product-grid,
+        .value-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .loop {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 760px) {
+        .nav {
+          width: min(100% - 28px, 1200px);
+          min-height: 66px;
+        }
+
+        .brand-name span,
+        .nav-actions .btn-ghost {
+          display: none;
+        }
+
+        .btn {
+          min-height: 40px;
+          padding: 0 14px;
+          font-size: 13px;
+        }
+
+        .hero-inner,
+        .inner {
+          width: min(100% - 28px, 1200px);
+        }
+
+        .hero-inner {
+          padding: 42px 0 54px;
+          gap: 34px;
+        }
+
+        .hero h1,
+        .thesis-copy h2,
+        .flywheel-copy h2,
+        .final h2 {
+          font-size: 38px;
+          line-height: 1.12;
+        }
+
+        .hero-lead,
+        .section-head p,
+        .thesis-copy p,
+        .flywheel-copy p,
+        .final p {
+          font-size: 16px;
+        }
+
+        .proof-row,
+        .pain-grid,
+        .wedge-track,
+        .product-grid,
+        .value-grid,
+        .metric-grid {
+          grid-template-columns: 1fr;
+        }
+
+        h2 {
+          font-size: 34px;
+        }
+
+        .section,
+        .section.tight {
+          padding: 64px 0;
+        }
+
+        .sharp-line {
+          font-size: 19px;
+          padding: 18px;
+        }
+
+        .system-map {
+          min-height: 430px;
+          padding: 0;
+        }
+
+        .map-stage {
+          inset: 0;
+          transform: none;
+        }
+
+        .map-core {
+          width: 210px;
+          min-height: 112px;
+          top: 38%;
+        }
+
+        .map-core strong {
+          font-size: 19px;
+        }
+
+        .map-engine {
+          width: 240px;
+          top: 60%;
+          min-height: 58px;
+          font-size: 13px;
+        }
+
+        .map-node {
+          width: 92px;
+          min-height: 76px;
+        }
+
+        .map-node span {
+          font-size: 11px;
+        }
+
+        .node-answer {
+          left: 2%;
+          top: 18%;
+        }
+
+        .node-practice {
+          right: 2%;
+          top: 18%;
+        }
+
+        .node-mock {
+          left: 4%;
+          bottom: 15%;
+        }
+
+        .node-report {
+          right: 4%;
+          bottom: 15%;
+        }
+
+        .node-growth {
+          left: 38%;
+          bottom: 1%;
+        }
+
+        .connector {
+          display: none;
+        }
+
+        .loop {
+          grid-template-columns: 1fr;
+        }
+
+        .product-panel.large {
+          grid-column: auto;
+        }
+
+        .contrast-row {
+          grid-template-columns: 1fr;
+        }
+
+        .wedge-item::after {
+          display: none;
+        }
+
+        .wheel {
+          max-width: 350px;
+        }
+
+        .wheel-core {
+          width: 142px;
+          height: 142px;
+          font-size: 17px;
+        }
+
+        .wheel-node {
+          width: 106px;
+          min-height: 66px;
+          font-size: 12px;
+        }
+
+        .wheel-arrow {
+          inset: 54px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="nav" aria-label="页面导航">
+        <a class="brand" href="#top" aria-label="EduGraph AI 首页">
+          <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
+            <path fill="currentColor" d="M20 2 35.6 11v18L20 38 4.4 29V11L20 2Zm0 5.1L8.8 13.6v12.8L20 32.9l11.2-6.5V13.6L20 7.1Z"/>
+            <path fill="currentColor" d="M20 11.4 27.4 16v8L20 28.6 12.6 24v-8L20 11.4Zm0 5.1-3 1.8v3.4l3 1.8 3-1.8v-3.4l-3-1.8Z"/>
+          </svg>
+          <span class="brand-name">
+            <strong>EduGraph AI</strong>
+            <span>学习证据驱动的智能学习平台</span>
+          </span>
+        </a>
+        <nav class="nav-links" aria-label="主导航">
+          <a href="#problem">真实问题</a>
+          <a href="#answer">核心答案</a>
+          <a href="#product">产品闭环</a>
+          <a href="#market">市场路径</a>
+          <a href="#flywheel">数据飞轮</a>
+        </nav>
+        <div class="nav-actions">
+          <a class="btn btn-ghost" href="#pitch">90 秒说明</a>
+          <a class="btn btn-primary" href="#product">查看产品逻辑</a>
+        </div>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-inner">
+          <div>
+            <h1>把每一次作答，变成下一次<span>提分的依据</span></h1>
+            <p class="hero-lead">
+              EduGraph AI 从数学考试备考切入，把练习、批改、诊断、训练和报告连接成一个学习证据闭环。它不是再做一个题库，而是让学生、家长、教师和机构都看见“为什么错、差在哪里、下一步练什么”。
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="#answer">看核心判断</a>
+              <a class="btn btn-ghost" href="#market">看商业路径</a>
+            </div>
+            <div class="proof-row" aria-label="EduGraph AI 切入点">
+              <div class="proof-item">
+                <strong>IGCSE / GCSE Maths</strong>
+                <span>目标明确，评分结构清晰，家长付费意愿强</span>
+              </div>
+              <div class="proof-item">
+                <strong>11+ / 入学考试</strong>
+                <span>高压力、高频训练、需要可解释诊断报告</span>
+              </div>
+              <div class="proof-item">
+                <strong>Mock Test</strong>
+                <span>从一次考试事件转化为持续训练入口</span>
+              </div>
+              <div class="proof-item">
+                <strong>多角色报告</strong>
+                <span>学生知道任务，家长看懂问题，老师能干预</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="system-map" aria-label="EduGraph AI 学习证据系统示意图">
+            <div class="map-stage"></div>
+            <div class="map-core">
+              <div>
+                <strong>学习证据图谱</strong>
+                <span>Learning Evidence Graph</span>
+              </div>
+            </div>
+            <div class="map-engine">学生状态引擎 Learner State Engine</div>
+            <div class="map-node node-answer">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="none" stroke="currentColor" stroke-width="1.8" d="M6 3h9l3 3v15H6V3Zm9 0v4h4M8 11h8M8 15h8M8 19h5"/>
+              </svg>
+              <span>学生作答<br>Answer Data</span>
+            </div>
+            <div class="map-node node-practice">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="none" stroke="currentColor" stroke-width="1.8" d="M4 7h16M4 12h16M4 17h9M17 15l2 2 4-5"/>
+              </svg>
+              <span>个性化训练<br>Practice</span>
+            </div>
+            <div class="map-node node-mock">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="none" stroke="currentColor" stroke-width="1.8" d="M6 4h12v16H6zM9 8h6M9 12h6M9 16h3"/>
+              </svg>
+              <span>模考与评估<br>Mock Tests</span>
+            </div>
+            <div class="map-node node-report">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="none" stroke="currentColor" stroke-width="1.8" d="M5 19V5h14v14H5Zm4-4V9m4 6v-4m4 4V8"/>
+              </svg>
+              <span>学习报告<br>Reports</span>
+            </div>
+            <div class="map-node node-growth">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="none" stroke="currentColor" stroke-width="1.8" d="M4 18c5 0 7-3 8-8 1 5 3 8 8 8M12 10V4"/>
+              </svg>
+              <span>成长与进步<br>Growth</span>
+            </div>
+            <i class="connector connector-a"></i>
+            <i class="connector connector-b"></i>
+            <i class="connector connector-c"></i>
+            <i class="connector connector-d"></i>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-soft" id="problem">
+        <div class="inner">
+          <div class="section-head">
+            <div>
+              <p class="section-label">The Pain</p>
+              <h2>教育系统里最贵的浪费，不是没有题，而是作答之后没有行动。</h2>
+            </div>
+            <p>
+              学生、家长、教师和机构都被“分数”困住。分数告诉你发生了什么，却没有解释为什么发生，也没有自动生成下一步该做什么。
+            </p>
+          </div>
+          <div class="pain-grid">
+            <article class="pain-card">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="none" stroke="currentColor" stroke-width="1.8" d="M12 21a7 7 0 0 0 7-7c0-5-7-11-7-11S5 9 5 14a7 7 0 0 0 7 7Z"/>
+                <path fill="none" stroke="currentColor" stroke-width="1.8" d="M9 14h6"/>
+              </svg>
+              <h3>学生刷题很多，成绩仍然不稳</h3>
+              <p>他们不知道问题是知识点、读题、建模、计算、时间管理，还是考试表达。错题被收集了，但没有被修复。</p>
+            </article>
+            <article class="pain-card">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="none" stroke="currentColor" stroke-width="1.8" d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 9a7 7 0 0 1 14 0"/>
+                <path fill="none" stroke="currentColor" stroke-width="1.8" d="M18 6h3v5"/>
+              </svg>
+              <h3>家长只看到分数，看不懂真实弱点</h3>
+              <p>65 分不是诊断。家长真正需要知道的是孩子为什么丢分、离目标 Grade 差多少、在家能做什么。</p>
+            </article>
+            <article class="pain-card">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="none" stroke="currentColor" stroke-width="1.8" d="M4 19V5h16v14H4Zm4-3h8M8 9h8M8 12h5"/>
+                <path fill="none" stroke="currentColor" stroke-width="1.8" d="M18 18l3 3"/>
+              </svg>
+              <h3>教师批改很辛苦，却难规模化干预</h3>
+              <p>一套卷子批完，真正困难的是把班级共性错误变成分层练习、讲评重点和后续追踪。</p>
+            </article>
+            <article class="pain-card">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="none" stroke="currentColor" stroke-width="1.8" d="M3 20h18M5 20V9l7-5 7 5v11M9 20v-7h6v7"/>
+              </svg>
+              <h3>机构服务依赖老师经验，难以标准化</h3>
+              <p>诊断、Mock、家长沟通和后续练习一旦不能产品化，就很难稳定交付，也很难复制到更多学生。</p>
+            </article>
+          </div>
+          <div class="sharp-line">
+            EduGraph AI 解决的不是“出更多题”，而是<span>把作答之后的黑箱打开</span>，把每一次失分变成可解释、可追踪、可执行的学习证据。
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-dark" id="answer">
+        <div class="inner">
+          <div class="thesis">
+            <div class="thesis-copy">
+              <p class="section-label">The Answer</p>
+              <h2>不是 AI Tutor，先做学习证据系统。</h2>
+              <p>
+                普通 AI 教育产品在回答问题，EduGraph AI 在沉淀证据。它把一次作答拆成知识、技能、题型、错误模式、评分点、用时和再测结果，再用图谱和学生状态引擎推动下一步训练。
+              </p>
+              <p>
+                <strong>核心判断：</strong>谁能持续理解学生为什么错，谁就能控制训练路径、报告价值和长期教育数据资产。
+              </p>
+            </div>
+            <div class="contrast-list">
+              <div class="contrast-row">
+                <b>题库工具</b>
+                <span>提供题目，但题目和学生状态之间没有长期连接。</span>
+              </div>
+              <div class="contrast-row">
+                <b>AI 问答工具</b>
+                <span>能解释单题，但很难沉淀成可复用的学生画像和提分路径。</span>
+              </div>
+              <div class="contrast-row">
+                <b>EduGraph AI</b>
+                <span>把答案、错因、评分、再测和报告连接成证据闭环，让每次练习都推动下一次训练。</span>
+              </div>
+              <div class="contrast-row">
+                <b>长期平台</b>
+                <span>从数学考试备考切入，扩展到 Science、English Writing、A-Level、学校和 API 生态。</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-soft" id="product">
+        <div class="inner">
+          <div class="section-head">
+            <div>
+              <p class="section-label">The Loop</p>
+              <h2>从一次作答，到下一次提分，是一条完整链路。</h2>
+            </div>
+            <p>
+              EduGraph AI 的产品闭环不止“批改后给建议”。它要把学习数据进入平台后的每一步都结构化，直到训练结果再次回流系统。
+            </p>
+          </div>
+          <div class="loop" aria-label="EduGraph AI 学习闭环">
+            <article class="loop-step">
+              <span class="num">01</span>
+              <h3>作答进入</h3>
+              <p>学生完成练习、Mock Test 或上传解题步骤，系统收集答案、用时、题型和评分结果。</p>
+            </article>
+            <article class="loop-step">
+              <span class="num">02</span>
+              <h3>证据生成</h3>
+              <p>一次作答被拆解为知识点、能力、错误类型、Mark Scheme 对齐和再测结果。</p>
+            </article>
+            <article class="loop-step">
+              <span class="num">03</span>
+              <h3>状态更新</h3>
+              <p>学生状态引擎判断掌握度、薄弱点、目标 Grade 差距、风险点和考试准备度。</p>
+            </article>
+            <article class="loop-step">
+              <span class="num">04</span>
+              <h3>训练生成</h3>
+              <p>考试内容引擎生成错题修复、专项练习、Mini Quiz、Mock Paper、解析和评分标准。</p>
+            </article>
+            <article class="loop-step">
+              <span class="num">05</span>
+              <h3>批改反馈</h3>
+              <p>系统给出分数、失分原因、改进建议，并把新证据同步回学生画像。</p>
+            </article>
+            <article class="loop-step">
+              <span class="num">06</span>
+              <h3>报告分发</h3>
+              <p>学生获得任务，家长看懂问题，教师发现班级共性弱点，机构形成标准化服务。</p>
+            </article>
+          </div>
+          <div class="loop-note">
+            一句话说清楚：EduGraph AI 的核心不是 AI 出题，而是<span>学习证据驱动的持续提分闭环</span>。
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-label="产品界面预览">
+        <div class="inner">
+          <div class="section-head">
+            <div>
+              <p class="section-label">How It Works</p>
+              <h2>真实作答、评分依据、学生状态和学习报告，连接成可执行的下一步。</h2>
+            </div>
+            <p>
+              用真实考试材料、评分依据、学习状态和报告输出建立信任。EduGraph AI 的界面重点不是炫技，而是把“下一步行动”变得明确。
+            </p>
+          </div>
+          <div class="product-grid">
+            <article class="product-panel large">
+              <div class="product-media">
+                <img src="0580_w25_qp_11_full_paper_top.png" alt="IGCSE 数学试卷解析界面截图">
+              </div>
+              <div class="product-body">
+                <h3>真实考试资料进入系统</h3>
+                <p>Past Paper、Mark Scheme、题型结构和学生作答不再是分散材料，而是证据链的入口。</p>
+              </div>
+            </article>
+            <article class="product-panel large">
+              <div class="product-media">
+                <img src="paper33-q16-point-net.png" alt="数学题图形题与学习证据点截图">
+              </div>
+              <div class="product-body">
+                <h3>每道题拆成证据点</h3>
+                <p>知识点、技能、评分点和错误模式被结构化，方便后续生成错题修复和再测任务。</p>
+              </div>
+            </article>
+            <article class="product-panel">
+              <div class="state-panel">
+                <div class="product-body">
+                  <h3>学生状态面板</h3>
+                  <p>把“分数”还原成掌握度、风险点和目标差距。</p>
+                </div>
+                <div class="score-ring" aria-label="考试准备度 78 分">
+                  <span>78</span>
+                </div>
+                <div class="bars">
+                  <div class="bar">
+                    <span>几何建模</span>
+                    <span class="bar-line"><i style="width: 72%"></i></span>
+                    <span>72%</span>
+                  </div>
+                  <div class="bar">
+                    <span>代数运算</span>
+                    <span class="bar-line"><i style="width: 48%; background: var(--amber)"></i></span>
+                    <span>48%</span>
+                  </div>
+                  <div class="bar">
+                    <span>读题表达</span>
+                    <span class="bar-line"><i style="width: 43%; background: var(--red)"></i></span>
+                    <span>43%</span>
+                  </div>
+                </div>
+              </div>
+            </article>
+            <article class="product-panel">
+              <div class="state-panel">
+                <div class="product-body">
+                  <h3>家长报告</h3>
+                  <p>把复杂学习数据翻译成家长能理解的行动建议。</p>
+                </div>
+                <div class="bars" style="margin-top: 22px">
+                  <div class="bar">
+                    <span>本周任务</span>
+                    <span class="bar-line"><i style="width: 86%; background: var(--green)"></i></span>
+                    <span>36</span>
+                  </div>
+                  <div class="bar">
+                    <span>正确率</span>
+                    <span class="bar-line"><i style="width: 78%"></i></span>
+                    <span>78%</span>
+                  </div>
+                  <div class="bar">
+                    <span>风险题型</span>
+                    <span class="bar-line"><i style="width: 58%; background: var(--red)"></i></span>
+                    <span>23</span>
+                  </div>
+                </div>
+                <p style="margin: 20px 0 0; color: #536174; font-size: 14px">
+                  建议本周优先修复函数图像、圆周角和长题表达，完成 3 组再测任务后更新目标 Grade 差距。
+                </p>
+              </div>
+            </article>
+            <article class="product-panel large">
+              <div class="product-media">
+                <img src="paper33-q2-radius-drag.png" alt="交互式数学题半径拖拽界面截图">
+              </div>
+              <div class="product-body">
+                <h3>从静态试卷走向可训练界面</h3>
+                <p>题目不只是被展示，而是可以被操作、批改、诊断、修复和再次验证。</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section wedge" id="market">
+        <div class="inner">
+          <div class="section-head">
+            <div>
+              <p class="section-label">Market Wedge</p>
+              <h2>先从高痛点考试备考切入，再长成学习智能基础设施。</h2>
+            </div>
+            <p>
+              大愿景不能从第一天就做成泛教育平台。EduGraph AI 先用数学考试备考验证付费和闭环，再把能力复制到机构、学校和生态接口。
+            </p>
+          </div>
+          <div class="wedge-track">
+            <article class="wedge-item">
+              <span class="stage">Stage 1</span>
+              <h3>To C 学生与家长</h3>
+              <p>诊断测试、个性化练习、Mock Test、错题修复、家长报告和考前冲刺包。</p>
+            </article>
+            <article class="wedge-item">
+              <span class="stage">Stage 2</span>
+              <h3>培训机构与升学机构</h3>
+              <p>批量诊断、学生管理 Dashboard、Mock 管理、分层练习和报告导出。</p>
+            </article>
+            <article class="wedge-item">
+              <span class="stage">Stage 3</span>
+              <h3>学校与年级组</h3>
+              <p>班级分析、年级趋势、教师备课工具、自动批改和教学干预建议。</p>
+            </article>
+            <article class="wedge-item">
+              <span class="stage">Stage 4</span>
+              <h3>API、白标与内容生态</h3>
+              <p>题库生成、自动批改、学习诊断、报告 API 和教育平台私有化合作。</p>
+            </article>
+          </div>
+          <div class="exam-strip" aria-label="优先覆盖考试场景">
+            <span>IGCSE Maths</span>
+            <span>GCSE Maths</span>
+            <span>11+ Maths</span>
+            <span>Independent School Entrance</span>
+            <span>ISEB Pre-Test</span>
+            <span>Ukiset</span>
+            <span>Science</span>
+            <span>English Writing</span>
+            <span>A-Level</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-soft">
+        <div class="inner">
+          <div class="section-head">
+            <div>
+              <p class="section-label">Who Pays</p>
+              <h2>同一个证据闭环，服务六类真实付费场景。</h2>
+            </div>
+            <p>
+              EduGraph AI 不用一开始同时卖所有模式，但要让每个角色都看到自己的明确收益。
+            </p>
+          </div>
+          <div class="value-grid">
+            <article class="value-item">
+              <h3>学生</h3>
+              <p>不再盲目刷题，而是知道自己为什么错、下一步练什么、如何接近目标 Grade。</p>
+              <b>个性化练习账户 / 错题修复包 / 考前冲刺包</b>
+            </article>
+            <article class="value-item">
+              <h3>家长</h3>
+              <p>看懂孩子真实问题，而不是只看到一个分数；获得可执行的家庭支持建议。</p>
+              <b>家长报告订阅 / 阶段诊断 / 目标差距报告</b>
+            </article>
+            <article class="value-item">
+              <h3>教师</h3>
+              <p>快速发现班级共性弱点，生成分层练习、讲评重点和教学干预材料。</p>
+              <b>备课工具 / 班级分析 / Worksheet / Quiz</b>
+            </article>
+            <article class="value-item">
+              <h3>培训机构</h3>
+              <p>把学生评估、Mock Test 和家长报告标准化，降低人工诊断成本。</p>
+              <b>机构 SaaS / 学生管理 Dashboard / 报告导出</b>
+            </article>
+            <article class="value-item">
+              <h3>学校</h3>
+              <p>从结果管理走向过程管理，支持风险预警、教学质量提升和干预效果追踪。</p>
+              <b>学校 Licence / 年级 Dashboard / 教学干预报告</b>
+            </article>
+            <article class="value-item">
+              <h3>教育平台</h3>
+              <p>把 EduGraph AI 的题库、批改、诊断和报告能力集成进现有学习系统。</p>
+              <b>API 调用 / 白标合作 / 内容服务</b>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-dark" id="flywheel">
+        <div class="inner">
+          <div class="flywheel-wrap">
+            <div class="wheel" aria-label="EduGraph AI 数据飞轮">
+              <div class="wheel-arrow"></div>
+              <div class="wheel-core">学习证据<br>数据飞轮</div>
+              <div class="wheel-node">更多作答<br>More Data</div>
+              <div class="wheel-node">更准诊断<br>Better Diagnosis</div>
+              <div class="wheel-node">更强训练<br>Better Practice</div>
+              <div class="wheel-node">更高复购<br>Better Outcomes</div>
+            </div>
+            <div class="flywheel-copy">
+              <p class="section-label">Why It Compounds</p>
+              <h2>长期壁垒不是题库数量，而是学习证据的复利。</h2>
+              <p>
+                学生练习越多，系统越了解学生；Mock 越多，考试准备度预测越可靠；教师审核越多，题目和评分越精准；训练效果越多，推荐路径越有效。
+              </p>
+              <div class="metric-grid" aria-label="平台长期资产">
+                <div class="metric">
+                  <strong>10+</strong>
+                  <span>优先考试场景</span>
+                </div>
+                <div class="metric">
+                  <strong>100k+</strong>
+                  <span>学习证据点目标</span>
+                </div>
+                <div class="metric">
+                  <strong>4</strong>
+                  <span>阶段商业路径</span>
+                </div>
+                <div class="metric">
+                  <strong>6</strong>
+                  <span>核心付费角色</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="final" id="pitch">
+        <div class="inner final-grid">
+          <div>
+            <h2>EduGraph AI 的大机会：<span>从考试备考产品，长成中小学学习智能基础设施。</span></h2>
+            <p>
+              第一阶段卖的是诊断、训练和报告；长期沉淀的是学习证据、学生状态、考试内容和教学决策数据资产。
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="#top">回到开场</a>
+              <a class="btn btn-ghost" href="#product">查看闭环</a>
+            </div>
+          </div>
+          <div class="pitch-box">
+            <strong>90 秒说明</strong>
+            <p>
+              现在很多学生刷了大量题，但成绩提升并不稳定。家长只看到分数，却很难知道孩子真正的问题是读题、建模、计算、知识点、题型策略还是考试表达。EduGraph AI 从 IGCSE / GCSE Maths、11+ Maths 和入学考试等高需求场景切入，把学生答案、解题步骤、用时、错误类型、Mark Scheme 对齐和再测结果转化为学习证据，再通过学习证据图谱和学生状态引擎判断薄弱点，由考试内容引擎生成练习、错题修复、Mock Paper、解析和报告。我们的核心卖点不是提供更多题，而是让每一次作答都变成下一次提分的依据。
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
