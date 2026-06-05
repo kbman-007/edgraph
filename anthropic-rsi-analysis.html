@@ -1,0 +1,1165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>当 AI 开始制造自己 | Anthropic 递归自我改进文章分析</title>
+    <meta
+      name="description"
+      content="一页式中文可视化总结 Anthropic Institute 文章 When AI builds itself：证据链、关键数字、未来情景、治理含义和批判性解读。"
+    >
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%2317201c'/%3E%3Cpath d='M9 17c4-8 10-8 14 0M9 17c4 8 10 8 14 0' fill='none' stroke='%23fffaf0' stroke-width='2' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23d8eadb'/%3E%3C/svg%3E"
+    >
+    <style>
+      :root {
+        --ink: #17201c;
+        --muted: #657067;
+        --soft: #f7f3ea;
+        --paper: #fffdf7;
+        --line: #ded4c4;
+        --line-strong: #b9a98f;
+        --green: #1e6b4f;
+        --green-2: #d8eadb;
+        --blue: #2d5f86;
+        --blue-2: #dce9f2;
+        --amber: #a66a1b;
+        --amber-2: #f3e2c4;
+        --red: #964240;
+        --red-2: #f0d9d5;
+        --shadow: 0 18px 48px rgba(38, 30, 18, 0.12);
+        --radius: 8px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: var(--soft);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+        line-height: 1.65;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .site {
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      .hero {
+        position: relative;
+        min-height: 92vh;
+        padding: 34px clamp(18px, 4vw, 64px) 42px;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        background:
+          radial-gradient(circle at 78% 14%, rgba(45, 95, 134, 0.18), transparent 30%),
+          linear-gradient(135deg, #fbf7ee 0%, #f2eadb 54%, #e5dbc9 100%);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        position: relative;
+        z-index: 2;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 760;
+        letter-spacing: 0;
+      }
+
+      .brand-mark {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: conic-gradient(from 220deg, var(--green), var(--blue), var(--amber), var(--green));
+        box-shadow: inset 0 0 0 5px rgba(255, 253, 247, 0.84);
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 18px;
+        flex-wrap: wrap;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+      }
+
+      .hero-grid {
+        width: min(1180px, 100%);
+        margin: 64px auto 34px;
+        display: grid;
+        grid-template-columns: minmax(0, 1.02fr) minmax(360px, 0.78fr);
+        gap: clamp(26px, 5vw, 70px);
+        align-items: center;
+        position: relative;
+        z-index: 1;
+      }
+
+      .hero-copy h1 {
+        margin: 0;
+        max-width: 850px;
+        font-family: Georgia, "Times New Roman", "Songti SC", serif;
+        font-size: clamp(46px, 7vw, 92px);
+        line-height: 0.98;
+        font-weight: 560;
+        letter-spacing: 0;
+      }
+
+      .hero-copy p {
+        margin: 24px 0 0;
+        max-width: 700px;
+        color: #38423b;
+        font-size: clamp(17px, 2vw, 22px);
+      }
+
+      .hero-meta {
+        margin-top: 34px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .meta-pill {
+        padding: 8px 12px;
+        border: 1px solid rgba(23, 32, 28, 0.16);
+        border-radius: 999px;
+        background: rgba(255, 253, 247, 0.58);
+        color: #3d453f;
+        font-size: 13px;
+      }
+
+      .loop-card {
+        position: relative;
+        min-height: 430px;
+        padding: 24px;
+        border: 1px solid rgba(23, 32, 28, 0.16);
+        border-radius: var(--radius);
+        background: rgba(255, 253, 247, 0.72);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .loop-card::before {
+        content: "";
+        position: absolute;
+        inset: 24px;
+        border: 1px dashed rgba(30, 107, 79, 0.28);
+        border-radius: 50%;
+      }
+
+      .loop-node {
+        position: absolute;
+        display: grid;
+        place-items: center;
+        width: 118px;
+        height: 118px;
+        padding: 12px;
+        border-radius: 50%;
+        border: 1px solid rgba(23, 32, 28, 0.16);
+        text-align: center;
+        font-size: 14px;
+        font-weight: 720;
+        line-height: 1.25;
+        background: var(--paper);
+      }
+
+      .loop-node small {
+        display: block;
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 560;
+      }
+
+      .node-a {
+        top: 34px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-color: rgba(30, 107, 79, 0.35);
+        background: var(--green-2);
+      }
+
+      .node-b {
+        right: 22px;
+        top: 50%;
+        transform: translateY(-50%);
+        border-color: rgba(45, 95, 134, 0.35);
+        background: var(--blue-2);
+      }
+
+      .node-c {
+        left: 50%;
+        bottom: 34px;
+        transform: translateX(-50%);
+        border-color: rgba(166, 106, 27, 0.35);
+        background: var(--amber-2);
+      }
+
+      .node-d {
+        left: 22px;
+        top: 50%;
+        transform: translateY(-50%);
+        border-color: rgba(150, 66, 64, 0.35);
+        background: var(--red-2);
+      }
+
+      .loop-center {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        pointer-events: none;
+      }
+
+      .loop-center strong {
+        width: 142px;
+        height: 142px;
+        display: grid;
+        place-items: center;
+        padding: 18px;
+        border-radius: 50%;
+        background: #18211d;
+        color: #fffaf0;
+        text-align: center;
+        font-family: Georgia, "Times New Roman", "Songti SC", serif;
+        font-size: 22px;
+        line-height: 1.15;
+        font-weight: 560;
+        box-shadow: 0 16px 32px rgba(23, 32, 28, 0.18);
+      }
+
+      .scroll-cue {
+        width: min(1180px, 100%);
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        color: var(--muted);
+        font-size: 14px;
+        position: relative;
+        z-index: 1;
+      }
+
+      main {
+        background: var(--paper);
+      }
+
+      section {
+        padding: clamp(56px, 8vw, 104px) clamp(18px, 4vw, 64px);
+      }
+
+      .section-inner {
+        width: min(1180px, 100%);
+        margin: 0 auto;
+      }
+
+      .section-head {
+        display: grid;
+        grid-template-columns: minmax(0, 0.82fr) minmax(260px, 0.48fr);
+        gap: 36px;
+        align-items: end;
+        margin-bottom: 34px;
+      }
+
+      h2 {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", "Songti SC", serif;
+        font-size: clamp(34px, 4.8vw, 58px);
+        line-height: 1.05;
+        font-weight: 560;
+        letter-spacing: 0;
+      }
+
+      h3 {
+        margin: 0;
+        font-size: 20px;
+        line-height: 1.3;
+      }
+
+      .section-head p,
+      .lede {
+        margin: 0;
+        color: var(--muted);
+        font-size: 16px;
+      }
+
+      .argument {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .argument-card,
+      .metric-card,
+      .panel,
+      .scenario-card,
+      .take-card {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: #fffdf7;
+      }
+
+      .argument-card {
+        min-height: 260px;
+        padding: 22px;
+        position: relative;
+      }
+
+      .step-number {
+        display: inline-grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        margin-bottom: 22px;
+        border-radius: 50%;
+        color: #fffaf0;
+        background: var(--ink);
+        font-weight: 760;
+      }
+
+      .argument-card p,
+      .metric-card p,
+      .panel p,
+      .scenario-card p,
+      .take-card p {
+        margin: 10px 0 0;
+        color: var(--muted);
+        font-size: 15px;
+      }
+
+      .timeline {
+        position: relative;
+        display: grid;
+        grid-template-columns: repeat(5, minmax(160px, 1fr));
+        gap: 12px;
+        overflow-x: auto;
+        padding-bottom: 12px;
+      }
+
+      .timeline::before {
+        content: "";
+        position: absolute;
+        top: 55px;
+        left: 44px;
+        right: 44px;
+        height: 2px;
+        background: linear-gradient(90deg, var(--green), var(--blue), var(--amber), var(--red));
+      }
+
+      .time-card {
+        position: relative;
+        min-height: 240px;
+        padding: 78px 18px 20px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: linear-gradient(180deg, rgba(255, 253, 247, 0.88), #fffdf7);
+      }
+
+      .dot {
+        position: absolute;
+        top: 43px;
+        left: 22px;
+        width: 24px;
+        height: 24px;
+        border: 4px solid var(--paper);
+        border-radius: 50%;
+        background: var(--green);
+        box-shadow: 0 0 0 1px var(--line-strong);
+      }
+
+      .time-card:nth-child(2) .dot {
+        background: var(--blue);
+      }
+
+      .time-card:nth-child(3) .dot {
+        background: var(--amber);
+      }
+
+      .time-card:nth-child(4) .dot {
+        background: var(--red);
+      }
+
+      .time-card:nth-child(5) .dot {
+        background: var(--ink);
+      }
+
+      .year {
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 720;
+      }
+
+      .time-card p {
+        margin: 9px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .evidence {
+        background: #f6efe1;
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .metric-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .metric-card {
+        padding: 22px;
+      }
+
+      .metric {
+        display: block;
+        margin: 8px 0;
+        font-family: Georgia, "Times New Roman", "Songti SC", serif;
+        font-size: clamp(35px, 4.5vw, 58px);
+        line-height: 0.95;
+        color: var(--green);
+      }
+
+      .barset {
+        margin-top: 24px;
+        display: grid;
+        gap: 14px;
+      }
+
+      .bar-row {
+        display: grid;
+        grid-template-columns: 140px minmax(0, 1fr) 70px;
+        align-items: center;
+        gap: 12px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .bar-track {
+        height: 12px;
+        border-radius: 999px;
+        background: rgba(23, 32, 28, 0.08);
+        overflow: hidden;
+      }
+
+      .bar-fill {
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, var(--green), var(--blue));
+      }
+
+      .split {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(300px, 0.86fr);
+        gap: 22px;
+        align-items: stretch;
+      }
+
+      .panel {
+        padding: 24px;
+      }
+
+      .panel.dark {
+        color: #fffaf0;
+        background: #17201c;
+        border-color: #17201c;
+      }
+
+      .panel.dark p,
+      .panel.dark li {
+        color: rgba(255, 250, 240, 0.72);
+      }
+
+      .panel ul,
+      .scenario-card ul,
+      .source-list {
+        margin: 14px 0 0;
+        padding-left: 19px;
+        color: var(--muted);
+      }
+
+      .panel li,
+      .scenario-card li,
+      .source-list li {
+        margin: 8px 0;
+      }
+
+      .bottleneck-map {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(120px, 1fr));
+        gap: 8px;
+        margin-top: 22px;
+      }
+
+      .bottleneck {
+        min-height: 112px;
+        padding: 14px;
+        border: 1px solid rgba(255, 250, 240, 0.2);
+        border-radius: var(--radius);
+        background: rgba(255, 250, 240, 0.08);
+      }
+
+      .bottleneck strong {
+        display: block;
+        font-size: 15px;
+      }
+
+      .bottleneck span {
+        display: block;
+        margin-top: 8px;
+        color: rgba(255, 250, 240, 0.64);
+        font-size: 13px;
+      }
+
+      .scenario-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .scenario-card {
+        padding: 24px;
+        min-height: 360px;
+      }
+
+      .scenario-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 720;
+      }
+
+      .scenario-label::before {
+        content: "";
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--green);
+      }
+
+      .scenario-card:nth-child(2) .scenario-label::before {
+        background: var(--amber);
+      }
+
+      .scenario-card:nth-child(3) .scenario-label::before {
+        background: var(--red);
+      }
+
+      .critique {
+        background:
+          linear-gradient(180deg, rgba(23, 32, 28, 0.96), rgba(23, 32, 28, 0.92)),
+          #17201c;
+        color: #fffaf0;
+      }
+
+      .critique .section-head p {
+        color: rgba(255, 250, 240, 0.68);
+      }
+
+      .critique-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .critique .panel {
+        background: rgba(255, 250, 240, 0.06);
+        border-color: rgba(255, 250, 240, 0.16);
+      }
+
+      .critique .panel p,
+      .critique .panel li {
+        color: rgba(255, 250, 240, 0.72);
+      }
+
+      .takeaways {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .take-card {
+        min-height: 230px;
+        padding: 22px;
+      }
+
+      .tag {
+        display: inline-block;
+        margin-bottom: 16px;
+        padding: 5px 9px;
+        border-radius: 999px;
+        background: var(--green-2);
+        color: var(--green);
+        font-size: 12px;
+        font-weight: 760;
+      }
+
+      .sources {
+        background: #f6efe1;
+        border-top: 1px solid var(--line);
+      }
+
+      .source-note {
+        display: grid;
+        grid-template-columns: minmax(0, 0.8fr) minmax(300px, 0.6fr);
+        gap: 24px;
+      }
+
+      footer {
+        padding: 32px clamp(18px, 4vw, 64px);
+        background: #17201c;
+        color: rgba(255, 250, 240, 0.68);
+        font-size: 14px;
+      }
+
+      footer .section-inner {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        flex-wrap: wrap;
+      }
+
+      @media (max-width: 980px) {
+        .hero-grid,
+        .section-head,
+        .split,
+        .source-note {
+          grid-template-columns: 1fr;
+        }
+
+        .loop-card {
+          min-height: 380px;
+        }
+
+        .argument,
+        .metric-grid,
+        .scenario-grid,
+        .critique-grid,
+        .takeaways {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 680px) {
+        .hero {
+          min-height: auto;
+        }
+
+        .hero-grid {
+          margin-top: 42px;
+          grid-template-columns: 1fr;
+        }
+
+        .loop-card {
+          min-height: 340px;
+          padding: 18px;
+        }
+
+        .loop-node {
+          width: 94px;
+          height: 94px;
+          font-size: 12px;
+        }
+
+        .loop-center strong {
+          width: 116px;
+          height: 116px;
+          font-size: 18px;
+        }
+
+        .argument,
+        .metric-grid,
+        .scenario-grid,
+        .critique-grid,
+        .takeaways,
+        .bottleneck-map {
+          grid-template-columns: 1fr;
+        }
+
+        .bar-row {
+          grid-template-columns: 1fr;
+          gap: 6px;
+        }
+
+        .scroll-cue {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="site">
+      <header class="hero">
+        <nav class="nav" aria-label="页面导航">
+          <div class="brand">
+            <span class="brand-mark" aria-hidden="true"></span>
+            Anthropic 文章分析
+          </div>
+          <div class="nav-links">
+            <a href="#argument">论点</a>
+            <a href="#evidence">证据</a>
+            <a href="#scenarios">未来</a>
+            <a href="#critique">判断</a>
+          </div>
+        </nav>
+
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <h1>当 AI 开始制造自己</h1>
+            <p>
+              Anthropic Institute 的文章把一个正在发生的转变说清楚了：
+              AI 不只是被用于写产品代码，它正在进入训练、实验、评审和研究判断的循环。
+              一旦这个循环闭合，就会接近所谓的递归自我改进。
+            </p>
+            <div class="hero-meta" aria-label="页面摘要">
+              <span class="meta-pill">原文：When AI builds itself</span>
+              <span class="meta-pill">主题：Recursive self-improvement</span>
+              <span class="meta-pill">整理：中文可视化摘要</span>
+              <span class="meta-pill">口径：基于原文公开与内部数据叙述</span>
+            </div>
+          </div>
+
+          <div class="loop-card" aria-label="递归自我改进循环图">
+            <div class="loop-node node-a">设定目标<small>人类目前仍主导</small></div>
+            <div class="loop-node node-b">写代码与工具<small>Claude 已显著承担</small></div>
+            <div class="loop-node node-c">跑实验与评估<small>速度开始超人类</small></div>
+            <div class="loop-node node-d">训练下一代<small>尚未闭环</small></div>
+            <div class="loop-center"><strong>AI 研发循环</strong></div>
+          </div>
+        </div>
+
+        <div class="scroll-cue">
+          <span>这不是一篇普通生产力文章，而是一篇关于“研发控制权逐步迁移”的论证。</span>
+          <span>向下看证据链、关键缺口和三种未来。</span>
+        </div>
+      </header>
+
+      <main>
+        <section id="argument">
+          <div class="section-inner">
+            <div class="section-head">
+              <h2>文章真正想证明什么</h2>
+              <p>
+                Anthropic 的核心论点可以压缩成四步：能力提升，自动化研发执行，人类角色收缩，
+                最终可能出现 AI 自己设计和训练后继模型的闭环。
+              </p>
+            </div>
+
+            <div class="argument">
+              <article class="argument-card">
+                <span class="step-number">1</span>
+                <h3>AI 可独立完成的任务越来越长</h3>
+                <p>
+                  原文引用 METR 等外部基准，认为模型可可靠完成任务的时间跨度正在快速拉长，
+                  从几分钟级进入小时级，并可能在未来几年触及周级复杂任务。
+                </p>
+              </article>
+              <article class="argument-card">
+                <span class="step-number">2</span>
+                <h3>执行层已经被明显自动化</h3>
+                <p>
+                  写代码、改文件、运行测试、做实验、复现实验结果，这些原本占用大量人类时间的工作，
+                  正在由 coding agent 和研究 agent 承担。
+                </p>
+              </article>
+              <article class="argument-card">
+                <span class="step-number">3</span>
+                <h3>瓶颈转向判断与验证</h3>
+                <p>
+                  当“做事”变得便宜，真正稀缺的是选题、研究品味、结果可信度、代码审查和安全监控。
+                  文章反复强调这仍是人类的比较优势。
+                </p>
+              </article>
+              <article class="argument-card">
+                <span class="step-number">4</span>
+                <h3>闭环后风险和治理难度上升</h3>
+                <p>
+                  如果 AI 能设计自己的后继系统，进步速度会更多受算力和验证工具限制。
+                  那会放大科学收益，也会放大失控、误对齐和协调失败的风险。
+                </p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <div class="section-inner">
+            <div class="section-head">
+              <h2>从人工研发到闭环研发</h2>
+              <p>
+                原文用一条时间线描述 Anthropic 内部工作方式的变化。关键不是“工具更好用”，
+                而是 AI 在研发链条中的位置不断前移。
+              </p>
+            </div>
+
+            <div class="timeline" role="list" aria-label="研发自动化时间线">
+              <article class="time-card" role="listitem">
+                <span class="dot" aria-hidden="true"></span>
+                <div class="year">2021 至 2023</div>
+                <h3>第一代 Claude</h3>
+                <p>人类写代码、写文档、搭训练流程，AI 还不是研发流程里的主力。</p>
+              </article>
+              <article class="time-card" role="listitem">
+                <span class="dot" aria-hidden="true"></span>
+                <div class="year">2023 至 2025</div>
+                <h3>Chatbot 辅助</h3>
+                <p>AI 主要给片段建议，人类复制、粘贴、整合，方法仍由人类掌控。</p>
+              </article>
+              <article class="time-card" role="listitem">
+                <span class="dot" aria-hidden="true"></span>
+                <div class="year">2025 至 2026</div>
+                <h3>Coding agent</h3>
+                <p>AI 开始自己写文件、改文件、运行代码，工程师更多变成目标设定者和审查者。</p>
+              </article>
+              <article class="time-card" role="listitem">
+                <span class="dot" aria-hidden="true"></span>
+                <div class="year">今天</div>
+                <h3>自主 agent</h3>
+                <p>Agent 可以运行代码，并把小时级任务分派给其他 agent，形成多层工作流。</p>
+              </article>
+              <article class="time-card" role="listitem">
+                <span class="dot" aria-hidden="true"></span>
+                <div class="year">20XX?</div>
+                <h3>闭合循环</h3>
+                <p>如果 AI 能设计、训练和改进后继模型，Claude 就可能持续改进 Claude。</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section id="evidence" class="evidence">
+          <div class="section-inner">
+            <div class="section-head">
+              <h2>文章给出的关键证据</h2>
+              <p>
+                证据分两类：外部基准说明模型能力增长，Anthropic 内部数据说明这种能力已经改变 AI 公司自身研发。
+              </p>
+            </div>
+
+            <div class="metric-grid">
+              <article class="metric-card">
+                <h3>可完成任务时长</h3>
+                <strong class="metric">4 个月</strong>
+                <p>
+                  原文称 AI 可可靠完成任务的时间跨度约每 4 个月翻倍，快于此前约 7 个月翻倍的趋势。
+                </p>
+              </article>
+              <article class="metric-card">
+                <h3>生产代码归因</h3>
+                <strong class="metric">&gt;80%</strong>
+                <p>
+                  截至 2026 年 5 月，Anthropic 称合并进生产代码库的代码行中，超过 80% 可归因于 Claude。
+                </p>
+              </article>
+              <article class="metric-card">
+                <h3>工程输出变化</h3>
+                <strong class="metric">8x</strong>
+                <p>
+                  原文称 2026 年第二季度典型工程师每日合并代码量约为 2024 年的 8 倍，但也承认代码行不是质量指标。
+                </p>
+              </article>
+              <article class="metric-card">
+                <h3>研究执行速度</h3>
+                <strong class="metric">52x</strong>
+                <p>
+                  在一个小模型训练代码优化任务中，Claude 从 2025 年约 3 倍加速，提升到 2026 年约 52 倍加速。
+                </p>
+              </article>
+              <article class="metric-card">
+                <h3>开放式工程任务</h3>
+                <strong class="metric">76%</strong>
+                <p>
+                  原文称 Claude 在最开放的一类 Claude Code 任务上的成功率，2026 年 5 月达到 76%。
+                </p>
+              </article>
+              <article class="metric-card">
+                <h3>研究 next step 判断</h3>
+                <strong class="metric">64%</strong>
+                <p>
+                  在 Anthropic 构造的研究会话分叉评估中，Mythos Preview 的下一步建议有 64% 被判优于当时的人类选择。
+                </p>
+              </article>
+            </div>
+
+            <div class="barset" aria-label="关键指标横向对比">
+              <div class="bar-row">
+                <span>SWE-bench 趋势</span>
+                <span class="bar-track"><span class="bar-fill" style="width: 96%"></span></span>
+                <span>趋近饱和</span>
+              </div>
+              <div class="bar-row">
+                <span>CORE-Bench</span>
+                <span class="bar-track"><span class="bar-fill" style="width: 92%"></span></span>
+                <span>约 15 个月饱和</span>
+              </div>
+              <div class="bar-row">
+                <span>Claude 代码质量</span>
+                <span class="bar-track"><span class="bar-fill" style="width: 78%"></span></span>
+                <span>接近人类</span>
+              </div>
+              <div class="bar-row">
+                <span>人类方向设定</span>
+                <span class="bar-track"><span class="bar-fill" style="width: 38%"></span></span>
+                <span>仍是缺口</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <div class="section-inner">
+            <div class="section-head">
+              <h2>最关键的分界线：执行 vs 判断</h2>
+              <p>
+                文章最有价值的区分，是把研发拆成“执行一个目标”和“决定什么目标值得追”。
+                Anthropic 认为前者正在快速自动化，后者还没有完全交给模型。
+              </p>
+            </div>
+
+            <div class="split">
+              <article class="panel">
+                <h3>AI 已经很强的部分</h3>
+                <ul>
+                  <li>根据不完整需求写代码、改代码、运行测试。</li>
+                  <li>在固定目标和评分规则下做大量实验。</li>
+                  <li>复现研究、优化训练代码、排查运行时问题。</li>
+                  <li>作为自动 reviewer 发现 bug、安全缺陷和生产事故隐患。</li>
+                </ul>
+              </article>
+              <article class="panel dark">
+                <h3>文章承认仍未解决的部分</h3>
+                <ul>
+                  <li>什么问题值得做，什么结果值得信。</li>
+                  <li>何时停止一个看似有希望但其实走不通的方向。</li>
+                  <li>能不能设计下一代模型的关键研究路线。</li>
+                  <li>当模型自己制造后继模型时，如何验证它没有带着更难发现的错位目标继续进化。</li>
+                </ul>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="critique" id="critique">
+          <div class="section-inner">
+            <div class="section-head">
+              <h2>我的分析：这篇文章强在哪里，弱在哪里</h2>
+              <p>
+                它的说服力来自“内部研发过程正在改变”的一手观察；它的风险在于，
+                这些数据大多由 Anthropic 自己提供，且部分指标天然容易被误读。
+              </p>
+            </div>
+
+            <div class="critique-grid">
+              <article class="panel">
+                <h3>强点一：问题切得准</h3>
+                <p>
+                  文章没有把 RSI 讲成科幻跳跃，而是拆成工程、实验、评审、研究判断几层。
+                  这个拆法更接近真实 AI 研发组织的瓶颈迁移。
+                </p>
+              </article>
+              <article class="panel">
+                <h3>强点二：内部数据有信息量</h3>
+                <p>
+                  代码归因、每人合并量、自动 review、研究 agent 实验，这些指标比公开 benchmark
+                  更能说明 AI 是否正在加速 AI 公司自身。
+                </p>
+              </article>
+              <article class="panel">
+                <h3>弱点一：代码行数容易高估生产力</h3>
+                <p>
+                  Anthropic 自己也承认，代码行数不是质量指标。AI 让产出变多，不等于系统复杂度、
+                  维护成本和事故率同步改善。
+                </p>
+              </article>
+              <article class="panel">
+                <h3>弱点二：研究品味评估仍很窄</h3>
+                <p>
+                  “下一步是否优于人类”的实验是有趣信号，但不是完整的人类研究判断替代。
+                  真实研究还包含选题、价值判断、长期路线和组织协调。
+                </p>
+              </article>
+            </div>
+
+            <div class="panel dark" style="margin-top: 14px;">
+              <h3>一句话判断</h3>
+              <p>
+                这篇文章最值得重视的地方，不是它证明了递归自我改进一定会发生；
+                而是它说明：即便闭环永远不完全发生，AI 已经足以让前沿实验室以更高速度扩大探索面。
+                社会真正需要准备的，是验证、审查、协调和减速机制跟不上这个速度差。
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section id="scenarios">
+          <div class="section-inner">
+            <div class="section-head">
+              <h2>原文提出的三种未来</h2>
+              <p>
+                Anthropic 没把未来写成单一路线，而是给出三类情景。关键变量是能力曲线是否继续，
+                以及人类能否建立足够可信的治理和验证系统。
+              </p>
+            </div>
+
+            <div class="scenario-grid">
+              <article class="scenario-card">
+                <span class="scenario-label">Scenario 1</span>
+                <h3>趋势放缓，但现有能力扩散</h3>
+                <p>
+                  能力曲线可能变成 S 曲线，受算法瓶颈、芯片、能源、互连带宽或外部冲击限制。
+                </p>
+                <ul>
+                  <li>最有适应时间。</li>
+                  <li>即便不再提升，当前模型扩散也会重塑知识工作。</li>
+                  <li>Anthropic 明确认为这个情景不太可能。</li>
+                </ul>
+              </article>
+              <article class="scenario-card">
+                <span class="scenario-label">Scenario 2</span>
+                <h3>实验室持续获得复利效率</h3>
+                <p>
+                  AI 大幅自动化研发执行，但人类仍决定方向和判断结果。组织规模和产出能力之间的关系被重写。
+                </p>
+                <ul>
+                  <li>100 人组织可能承担过去巨大组织的工作量。</li>
+                  <li>瓶颈会转向 review、可信评估、项目筛选。</li>
+                  <li>文章认为这很可能是当前正在进入的路线。</li>
+                </ul>
+              </article>
+              <article class="scenario-card">
+                <span class="scenario-label">Scenario 3</span>
+                <h3>完整递归自我改进出现</h3>
+                <p>
+                  AI 能自己设计和训练后继模型，研发速度主要受算力、训练效率和验证能力限制。
+                </p>
+                <ul>
+                  <li>科学和医疗可能快速受益。</li>
+                  <li>人类从研发主导者变成监督者和验证者。</li>
+                  <li>错位风险可能随代际改进而复合。</li>
+                </ul>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <div class="section-inner">
+            <div class="section-head">
+              <h2>组织会遇到的 Amdahl 瓶颈</h2>
+              <p>
+                原文借用 Amdahl 定律提醒：局部速度变快，不代表整体系统同等加速。
+                当执行速度暴涨，没变快的环节会变成新的上限。
+              </p>
+            </div>
+
+            <article class="panel dark">
+              <h3>从“写得慢”到“审不过来”</h3>
+              <p>
+                Anthropic 已经感受到类似瓶颈：代码变多，人工 review 成为限制；
+                研究想法、工具、模拟和倡议变多，组织无法全部追完。
+              </p>
+              <div class="bottleneck-map" aria-label="组织瓶颈地图">
+                <div class="bottleneck"><strong>生成</strong><span>代码、实验、想法暴增</span></div>
+                <div class="bottleneck"><strong>审查</strong><span>人类 review 被挤压</span></div>
+                <div class="bottleneck"><strong>验证</strong><span>结果可信度变稀缺</span></div>
+                <div class="bottleneck"><strong>选择</strong><span>方向和优先级更难</span></div>
+                <div class="bottleneck"><strong>协调</strong><span>跨组织减速更难验证</span></div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section>
+          <div class="section-inner">
+            <div class="section-head">
+              <h2>文章最后的政策主张</h2>
+              <p>
+                Anthropic 的主张不是单边停止，而是希望世界拥有可验证的放缓或暂停选项。
+                难点在于，AI 训练比传统军备更难发现、更难验证，也更容易被秘密抢跑。
+              </p>
+            </div>
+
+            <div class="takeaways">
+              <article class="take-card">
+                <span class="tag">1. 可验证暂停</span>
+                <h3>不是喊停，而是能确认别人也停</h3>
+                <p>一个可信暂停需要多个前沿实验室、多个国家、同等条件和可靠验证机制。</p>
+              </article>
+              <article class="take-card">
+                <span class="tag">2. 监控难度</span>
+                <h3>训练运行可以隐藏</h3>
+                <p>输入通用、基础设施分散、追赶激励强，使得 AI 军备控制比传统技术更棘手。</p>
+              </article>
+              <article class="take-card">
+                <span class="tag">3. 安全工具</span>
+                <h3>验证能力要追上生成能力</h3>
+                <p>未来重点会从写出更多系统，转向确认这些系统是安全、可解释、可控的。</p>
+              </article>
+              <article class="take-card">
+                <span class="tag">4. 公共参与</span>
+                <h3>讨论不能只留在 AI 公司内部</h3>
+                <p>原文呼吁政策制定者、研究者、公民社会和其他 AI 公司共同参与。</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="sources">
+          <div class="section-inner source-note">
+            <div>
+              <h2>读完后该带走什么</h2>
+              <p class="lede">
+                最稳妥的结论是：AI 研发自动化已经不是未来式；完整递归自我改进还不是事实，
+                但组织和政策需要按“它可能比传统制度准备得更快到来”来做预案。
+              </p>
+            </div>
+            <div>
+              <h3>资料口径</h3>
+              <ul class="source-list">
+                <li>
+                  主要来源：
+                  <a href="https://www.anthropic.com/institute/recursive-self-improvement" target="_blank" rel="noopener noreferrer">
+                    Anthropic Institute, When AI builds itself
+                  </a>
+                </li>
+                <li>页面中关键数字均按原文叙述整理；其中 Anthropic 内部数据未做独立审计。</li>
+                <li>本文是中文解读与结构化总结，不代表 Anthropic 官方表述。</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        <div class="section-inner">
+          <span>Anthropic RSI 文章中文可视化总结</span>
+          <span>Generated for reading, discussion, and strategy review.</span>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
